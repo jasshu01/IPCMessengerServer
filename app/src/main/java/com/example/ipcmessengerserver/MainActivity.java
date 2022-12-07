@@ -25,30 +25,30 @@ public class MainActivity extends AppCompatActivity {
     static final int FROM_CLIENT_TO_SERVER = 1;
     static final int FROM_SERVER_TO_CLIENT = 2;
 
-//    Messenger ServerMessenger = new Messenger(new ServerHandler());
-//
-//    class ServerHandler extends Handler {
-//        @Override
-//        public void handleMessage(@NonNull Message msg) {
-//            super.handleMessage(msg);
-//            Log.d("MymessengerClient", "Client : handling Message");
-//
-//            switch (msg.what) {
-//                case FROM_CLIENT_TO_SERVER:
-//
-//                    TextView textView = findViewById(R.id.textView);
-//                    String str = msg.getData().getString("FROM_CLIENT_TO_SERVER");
-//                    textView.setText(str);
-//                    Log.d("MymessengerClient", "" + str);
-//
-//
-//                default:
-//                    super.handleMessage(msg);
-//            }
-//
-//
-//        }
-//    }
+    Messenger ServerMessenger = new Messenger(new ServerHandler());
+
+    class ServerHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+
+
+            switch (msg.what) {
+                case FROM_CLIENT_TO_SERVER:
+
+                    TextView textView = findViewById(R.id.textView);
+                    String str = msg.getData().getString("FROM_CLIENT_TO_SERVER");
+                    textView.setText(str);
+                    Log.d("MymessengerClient", "" + str);
+
+
+                default:
+                    super.handleMessage(msg);
+            }
+
+
+        }
+    }
 
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -68,8 +68,9 @@ public class MainActivity extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     String str = String.valueOf(sendMessage.getText());
                     sendMessage.setText("");
-                    bundle.putString("FROM_SERVER_TO_CLIENT", "Hey Client! " + str);
+                    bundle.putString("FROM_SERVER_TO_CLIENT", str);
                     message.setData(bundle);
+                    message.replyTo = ServerMessenger;
                     try {
 
                         ClientMessenger.send(message);
