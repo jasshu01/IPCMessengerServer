@@ -38,7 +38,7 @@ public class MessengerServerService extends Service {
 
                     Message message = Message.obtain(null, FROM_SERVER_TO_CLIENT);
                     Bundle bundle = new Bundle();
-                    bundle.putString("FROM_SERVER_TO_CLIENT", "Hey Client! , I Received Your Message");
+                    bundle.putString("FROM_SERVER_TO_CLIENT", "Hey Client! , I Received Your Message : "+ msg.getData().getString("FROM_CLIENT_TO_SERVER"));
                     message.setData(bundle);
                     try {
                         msg.replyTo.send(message);
