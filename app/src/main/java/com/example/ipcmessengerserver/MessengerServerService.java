@@ -3,6 +3,7 @@ package com.example.ipcmessengerserver;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -21,7 +22,8 @@ public class MessengerServerService extends Service {
     static final int FROM_CLIENT_TO_SERVER = 1;
     static final int FROM_SERVER_TO_CLIENT = 2;
 
-    Messenger messenger;
+    public static Messenger messenger;
+    public static Messenger RecentClient;
 
     private class IncomingHandler extends Handler {
         @Override
@@ -31,15 +33,18 @@ public class MessengerServerService extends Service {
 
             switch (msg.what) {
                 case FROM_CLIENT_TO_SERVER:
-//                    Log.d("MymessengerClient", "" + msg.getData());
+
                     Log.d("MymessengerClient", "" + msg.getData().getString("FROM_CLIENT_TO_SERVER"));
 
+                    Message message = Message.obtain(null, FROM_SERVER_TO_CLIENT);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("FROM_SERVER_TO_CLIENT", "Hey Client! , I Received Your Message");
+                    message.setData(bundle);
                     try {
-                        msg.replyTo.send(Message.obtain(null, FROM_SERVER_TO_CLIENT, 3, 3));
+                        msg.replyTo.send(message);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
-
 
                 default:
                     super.handleMessage(msg);
