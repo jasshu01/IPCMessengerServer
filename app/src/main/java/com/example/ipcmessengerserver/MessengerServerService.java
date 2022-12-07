@@ -23,7 +23,7 @@ public class MessengerServerService extends Service {
     static final int FROM_SERVER_TO_CLIENT = 2;
 
     public static Messenger messenger;
-    public static Messenger RecentClient;
+
 
     private class IncomingHandler extends Handler {
         @Override
@@ -38,10 +38,11 @@ public class MessengerServerService extends Service {
 
                     Message message = Message.obtain(null, FROM_SERVER_TO_CLIENT);
                     Bundle bundle = new Bundle();
-                    bundle.putString("FROM_SERVER_TO_CLIENT", "Hey Client! , I Received Your Message : "+ msg.getData().getString("FROM_CLIENT_TO_SERVER"));
+                    bundle.putString("FROM_SERVER_TO_CLIENT", "Hey Client!, I Received Your Message: " + msg.getData().getString("FROM_CLIENT_TO_SERVER"));
                     message.setData(bundle);
                     try {
-                        msg.replyTo.send(message);
+                        if (msg.replyTo != null)
+                            msg.replyTo.send(message);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
@@ -56,7 +57,6 @@ public class MessengerServerService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         messenger = new Messenger(new IncomingHandler());
-        Log.d("MymessengerClient", "server Binded");
         return messenger.getBinder();
     }
 }
